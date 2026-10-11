@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: your-mysql-password
+    url: jdbc:mysql://localhost:3306/my_dorm?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&nullCatalogMeansCurrent=true
+    username: root
+  redis:
+    database: 0
+    host: localhost
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+        min-idle: 0
+#    password: your-redis-password
+    port: 6379
+    timeout: 10s
+  # 控制不返回
+  jackson:
+    default-property-inclusion: non_empty
+mybatis:
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.it.dorm.domain
+
+
+
+
+# token配置
+token:
+  # 令牌自定义标识(默认:Authorization)
+  header: Authorization
+  # 令牌密钥(默认:mySecret)
+  secret: change-me-to-a-long-random-string
+  # 令牌有效期（默认60分钟）
+  expireTime: 120

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.dorm.mapper.DormCheckMapper">
+
+    <resultMap type="DormCheck" id="DormCheckResult">
+        <result property="checkId" column="check_id"/>
+        <result property="dormId" column="dorm_id"/>
+        <result property="checkDate" column="check_date"/>
+        <result property="checkerName" column="checker_name"/>
+        <result property="cleanlinessScore" column="cleanliness_score"/>
+        <result property="checkStatus" column="check_status"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectDormCheckVo">
+        select dc.check_id,
+               dc.dorm_id,
+               dc.check_date,
+               dc.checker_name,
+               dc.cleanliness_score,
+               dc.check_status,
+               dc.remark,
+               dc.create_by,
+               dc.create_time,
+               dc.update_by,
+               dc.update_time,
+               dr.room_no
+        from dorm_check dc
+                 left join dorm_room dr on dorm_id = dr.id
+
+    </sql>
+
+    <select id="selectDormCheckList" parameterType="DormCheck" resultMap="DormCheckResult">
+        <include refid="selectDormCheckVo"/>
+        <where>
+            <if test="dormId != null ">and dc.dorm_id = #{dormId}</if>
+            <if test="checkDate != null ">and dc.check_date = #{checkDate}</if>
+            <if test="checkerName != null  and checkerName != ''">and dc.checker_name like concat('%', #{checkerName},
+                '%')
+            </if>
+            <if test="cleanlinessScore != null ">and dc.cleanliness_score = #{cleanlinessScore}</if>
+            <if test="checkStatus != null  and checkStatus != ''">and dc.check_status = #{checkStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectDormCheckByCheckId" parameterType="Long" resultMap="DormCheckResult">
+        <include refid="selectDormCheckVo"/>
+        where dc.check_id = #{checkId}
+    </select>
+
+    <insert id="insertDormCheck" parameterType="DormCheck">
+        insert into dorm_check
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="checkId != null">check_id,</if>
+            <if test="dormId != null">dorm_id,</if>
+            <if test="checkDate != null">check_date,</if>
+            <if test="checkerName != null and checkerName != ''">checker_name,</if>
+            <if test="cleanlinessScore != null">cleanliness_score,</if>
+            <if test="checkStatus != null">check_status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="checkId != null">#{checkId},</if>
+            <if test="dormId != null">#{dormId},</if>
+            <if test="checkDate != null">#{checkDate},</if>
+            <if test="checkerName != null and checkerName != ''">#{checkerName},</if>
+            <if test="cleanlinessScore != null">#{cleanlinessScore},</if>
+            <if test="checkStatus != null">#{checkStatus},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDormCheck" parameterType="DormCheck">
+        update dorm_check
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dormId != null">dorm_id = #{dormId},</if>
+            <if test="checkDate != null">check_date = #{checkDate},</if>
+            <if test="checkerName != null and checkerName != ''">checker_name = #{checkerName},</if>
+            <if test="cleanlinessScore != null">cleanliness_score = #{cleanlinessScore},</if>
+            <if test="checkStatus != null">check_status = #{checkStatus},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where check_id = #{checkId}
+    </update>
+
+    <delete id="deleteDormCheckByCheckId" parameterType="Long">
+        delete
+        from dorm_check
+        where check_id = #{checkId}
+    </delete>
+
+    <delete id="deleteDormCheckByCheckIds" parameterType="String">
+        delete from dorm_check where check_id in
+        <foreach item="checkId" collection="array" open="(" separator="," close=")">
+            #{checkId}
+        </foreach>
+    </delete>
+</mapper>

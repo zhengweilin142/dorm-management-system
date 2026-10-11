@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.dorm.mapper.DormRoomUserMapper">
+
+    <resultMap type="DormRoomUser" id="DormRoomUserResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="roomId" column="room_id"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectDormRoomUserVo">
+        select dru.id,
+               dru.user_id,
+               dru.room_id,
+               dru.remark,
+               dru.create_by,
+               dru.create_time,
+               dru.update_by,
+               dru.update_time,
+               su.user_name,
+               su.phonenumber
+        from dorm_room_user dru
+                 left join sys_user su on dru.user_id = su.user_id
+    </sql>
+
+    <select id="selectDormRoomUserList" parameterType="DormRoomUser" resultMap="DormRoomUserResult">
+        <include refid="selectDormRoomUserVo"/>
+        <where>
+            <if test="userId != null ">and dru.user_id = #{userId}</if>
+            <if test="roomId != null ">and room_id = #{roomId}</if>
+        </where>
+    </select>
+
+    <select id="selectDormRoomUserById" parameterType="Long" resultMap="DormRoomUserResult">
+        <include refid="selectDormRoomUserVo"/>
+        where dru.id = #{id}
+    </select>
+
+    <insert id="insertDormRoomUser" parameterType="DormRoomUser">
+        insert into dorm_room_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="roomId != null">room_id,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="roomId != null">#{roomId},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDormRoomUser" parameterType="DormRoomUser">
+        update dorm_room_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="roomId != null">room_id = #{roomId},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDormRoomUserById" parameterType="Long">
+        delete
+        from dorm_room_user
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteDormRoomUserByIds" parameterType="String">
+        delete from dorm_room_user where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

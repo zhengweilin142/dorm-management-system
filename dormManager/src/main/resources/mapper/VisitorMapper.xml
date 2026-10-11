@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.dorm.mapper.VisitorMapper">
+    
+    <resultMap type="Visitor" id="VisitorResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="gender"    column="gender"    />
+        <result property="phoneNum"    column="phone_num"    />
+        <result property="originCity"    column="origin_city"    />
+        <result property="visitTime"    column="visit_time"    />
+        <result property="content"    column="content"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectVisitorVo">
+        select id, name, gender, phone_num, origin_city, visit_time, content, remark, create_by, create_time, update_by, update_time from visitor
+    </sql>
+
+    <select id="selectVisitorList" parameterType="Visitor" resultMap="VisitorResult">
+        <include refid="selectVisitorVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="gender != null "> and gender = #{gender}</if>
+            <if test="phoneNum != null  and phoneNum != ''"> and phone_num = #{phoneNum}</if>
+            <if test="originCity != null  and originCity != ''"> and origin_city = #{originCity}</if>
+            <if test="visitTime != null "> and visit_time = #{visitTime}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+    </select>
+    
+    <select id="selectVisitorById" parameterType="Long" resultMap="VisitorResult">
+        <include refid="selectVisitorVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertVisitor" parameterType="Visitor">
+        insert into visitor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="gender != null">gender,</if>
+            <if test="phoneNum != null and phoneNum != ''">phone_num,</if>
+            <if test="originCity != null and originCity != ''">origin_city,</if>
+            <if test="visitTime != null">visit_time,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="phoneNum != null and phoneNum != ''">#{phoneNum},</if>
+            <if test="originCity != null and originCity != ''">#{originCity},</if>
+            <if test="visitTime != null">#{visitTime},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVisitor" parameterType="Visitor">
+        update visitor
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="phoneNum != null and phoneNum != ''">phone_num = #{phoneNum},</if>
+            <if test="originCity != null and originCity != ''">origin_city = #{originCity},</if>
+            <if test="visitTime != null">visit_time = #{visitTime},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteVisitorById" parameterType="Long">
+        delete from visitor where id = #{id}
+    </delete>
+
+    <delete id="deleteVisitorByIds" parameterType="String">
+        delete from visitor where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

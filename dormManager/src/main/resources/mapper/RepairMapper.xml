@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.dorm.mapper.RepairMapper">
+
+    <resultMap type="Repair" id="RepairResult">
+        <result property="id" column="id"/>
+        <result property="repairer" column="repairer"/>
+        <result property="buildId" column="build_id"/>
+        <result property="roomId" column="room_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="state" column="state"/>
+        <result property="orderBuildTime" column="order_build_time"/>
+        <result property="orderFinishTime" column="order_finish_time"/>
+    </resultMap>
+
+    <sql id="selectRepairVo">
+        select r.id,
+               r.repairer,
+               r.build_id,
+               r.room_id,
+               r.title,
+               r.content,
+               r.state,
+               r.order_build_time,
+               r.order_finish_time,
+               db.build_name,
+               dr.room_no
+        from repair r
+                 left join dorm_build db on r.build_id = db.id
+                 left join dorm_room dr on dr.id = r.room_id
+    </sql>
+
+    <select id="selectRepairList" parameterType="Repair" resultMap="RepairResult">
+        <include refid="selectRepairVo"/>
+        <where>
+            <if test="repairer != null  and repairer != ''">and r.repairer like concat('%',#{repairer},'%')</if>
+            <if test="buildId != null ">and r.build_id = #{buildId}</if>
+            <if test="roomId != null ">and r.room_id = #{roomId}</if>
+            <if test="title != null  and title != ''">and r.title = #{title}</if>
+            <if test="content != null  and content != ''">and r.content = #{content}</if>
+            <if test="state != null  and state != ''">and r.state = #{state}</if>
+            <if test="orderBuildTime != null ">and r.order_build_time = #{orderBuildTime}</if>
+            <if test="orderFinishTime != null ">and r.order_finish_time = #{orderFinishTime}</if>
+        </where>
+    </select>
+
+    <select id="selectRepairById" parameterType="Long" resultMap="RepairResult">
+        <include refid="selectRepairVo"/>
+        where r.id = #{id}
+    </select>
+
+    <insert id="insertRepair" parameterType="Repair">
+        insert into repair
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="repairer != null and repairer != ''">repairer,</if>
+            <if test="buildId != null">build_id,</if>
+            <if test="roomId != null">room_id,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="state != null and state != ''">state,</if>
+            <if test="orderBuildTime != null">order_build_time,</if>
+            <if test="orderFinishTime != null">order_finish_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="repairer != null and repairer != ''">#{repairer},</if>
+            <if test="buildId != null">#{buildId},</if>
+            <if test="roomId != null">#{roomId},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="state != null and state != ''">#{state},</if>
+            <if test="orderBuildTime != null">#{orderBuildTime},</if>
+            <if test="orderFinishTime != null">#{orderFinishTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateRepair" parameterType="Repair">
+        update repair
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="repairer != null and repairer != ''">repairer = #{repairer},</if>
+            <if test="buildId != null">build_id = #{buildId},</if>
+            <if test="roomId != null">room_id = #{roomId},</if>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="state != null and state != ''">state = #{state},</if>
+            <if test="orderBuildTime != null">order_build_time = #{orderBuildTime},</if>
+            <if test="orderFinishTime != null">order_finish_time = #{orderFinishTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRepairById" parameterType="Long">
+        delete
+        from repair
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteRepairByIds" parameterType="String">
+        delete from repair where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

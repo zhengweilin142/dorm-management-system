@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.dorm.mapper.AdjustRoomMapper">
+
+    <resultMap type="AdjustRoom" id="AdjustRoomResult">
+        <result property="id" column="id"/>
+
+        <result property="currentRoomId" column="current_room_id"/>
+        <result property="currentBedId" column="current_bed_id"/>
+        <result property="towardsRoomId" column="towards_room_id"/>
+        <result property="towardsBedId" column="towards_bed_id"/>
+        <result property="state" column="state"/>
+        <result property="applyTime" column="apply_time"/>
+        <result property="finishTime" column="finish_time"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectAdjustRoomVo">
+        select ar.id,
+               ar.user_id,
+               ar.current_room_id,
+               ar.towards_room_id,
+               ar.state,
+               ar.apply_time,
+               ar.finish_time,
+               ar.remark,
+               ar.create_by,
+               ar.create_time,
+               ar.update_by,
+               ar.update_time,
+               d.room_no  as current_room_no,
+               dr.room_no as towards_room_no,
+               su.user_name
+        from adjust_room ar
+                 left join dorm_room d on ar.current_room_id = d.id
+                 left join dorm_room dr on ar.towards_room_id = dr.id
+                 left join sys_user su on ar.user_id = su.user_id
+    </sql>
+
+    <select id="selectAdjustRoomList" parameterType="AdjustRoom" resultMap="AdjustRoomResult">
+        <include refid="selectAdjustRoomVo"/>
+        <where>
+            <if test="userName != null  and userName != ''">and ar.user_name like concat('%', #{userName}, '%')</if>
+            <if test="currentRoomId != null ">and ar.current_room_id = #{currentRoomId}</if>
+            <if test="towardsRoomId != null ">and ar.towards_room_id = #{towardsRoomId}</if>
+            <if test="state != null  and state != ''">and ar.state = #{state}</if>
+            <if test="applyTime != null  and applyTime != ''">and ar.apply_time = #{applyTime}</if>
+            <if test="finishTime != null  and finishTime != ''">and ar.finish_time = #{finishTime}</if>
+        </where>
+    </select>
+
+    <select id="selectAdjustRoomById" parameterType="Long" resultMap="AdjustRoomResult">
+        <include refid="selectAdjustRoomVo"/>
+        where ar.id = #{id}
+    </select>
+
+
+    <update id="updateAdjustRoom" parameterType="AdjustRoom">
+        update adjust_room
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="currentRoomId != null">current_room_id = #{currentRoomId},</if>
+            <if test="currentBedId != null">current_bed_id = #{currentBedId},</if>
+            <if test="towardsRoomId != null">towards_room_id = #{towardsRoomId},</if>
+            <if test="towardsBedId != null">towards_bed_id = #{towardsBedId},</if>
+            <if test="state != null and state != ''">state = #{state},</if>
+            <if test="applyTime != null and applyTime != ''">apply_time = #{applyTime},</if>
+            <if test="finishTime != null">finish_time = #{finishTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAdjustRoomById" parameterType="Long">
+        delete
+        from adjust_room
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteAdjustRoomByIds" parameterType="String">
+        delete from adjust_room where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

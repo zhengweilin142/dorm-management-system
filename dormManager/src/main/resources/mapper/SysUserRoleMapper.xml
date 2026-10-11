@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.dorm.mapper.SysUserRoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.it.dorm.domain.SysUserRole">
+        <id property="userId" column="user_id"/>
+        <id property="roleId" column="role_id"/>
+    </resultMap>
+    <select id="selectSysUserRoleList" parameterType="sysUserRole" resultType="SysUserRole">
+		select user_id,r.role_id,role_name,r.role_key
+		from sys_user_role sur
+		left join sys_role r on sur.role_id = r.role_id
+		<where>
+			<if test="userId != null">sur.user_id =#{userId}</if>
+		</where>
+	</select>
+
+</mapper>

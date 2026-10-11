@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.dorm.mapper.OrderMapper">
+
+    <resultMap type="Order" id="OrderResult">
+        <result property="orderId" column="order_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="dormId" column="dorm_id"/>
+        <result property="orderType" column="order_type"/>
+        <result property="amount" column="amount"/>
+
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectOrderVo">
+        select o.order_id,
+               o.user_id,
+               o.dorm_id,
+               o.order_type,
+               o.amount,
+               o.`status`,
+               o.remark,
+               o.create_by,
+               o.create_time,
+               o.update_by,
+               o.update_time,
+               dr.room_no
+        from `order` o
+                 left join dorm_room dr on o.dorm_id = dr.id
+    </sql>
+
+    <select id="selectOrderList" parameterType="Order" resultMap="OrderResult">
+        <include refid="selectOrderVo"/>
+        <where>
+            <if test="userId != null ">and o.user_id = #{userId}</if>
+            <if test="dormId != null ">and o.dorm_id = #{dormId}</if>
+            <if test="orderType != null  and orderType != ''">and o.order_type = #{orderType}</if>
+            <if test="amount != null ">and o.amount = #{amount}</if>
+            <if test="status != null  and status != ''">and o.`status` = #{status}</if>
+        </where>
+        order by o.create_time desc
+    </select>
+
+    <select id="selectOrderByOrderId" parameterType="Long" resultMap="OrderResult">
+        <include refid="selectOrderVo"/>
+        where order_id = #{orderId}
+    </select>
+
+</mapper>

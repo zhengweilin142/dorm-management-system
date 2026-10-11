@@ -1,0 +1,33 @@
+
+server:
+  port: 9090
+spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 200MB
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+# token配置
+token:
+  # 令牌自定义标识(默认:Authorization)
+  header: Authorization
+  # 令牌密钥(默认:mySecret)
+  secret: change-me-to-a-long-random-string
+  # 令牌有效期（默认60分钟）
+  expireTime: 120
+
+
+app:
+  download-path: C:\\myFile\\download\\
+  upload-path: C:\\myFile\\upload\\
+  file-type-array: .png,.jpg,.jpeg,.txt,.zip,.rar,.pdf,.xml,xls
+  max-file-size: 8192
+
+
+

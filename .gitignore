@@ -1,0 +1,40 @@
+# ===================== 依赖 =====================
+node_modules/
+
+# ===================== 构建产物 =====================
+dist/
+target/
+out/
+*.war
+*.jar
+*.class
+
+# ===================== IDE / 编辑器 =====================
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# ===================== 运行时数据（不入库）=====================
+# 后台上传的文件目录：里面是用户上传的图片/表格，可能含个人信息
+files/
+# Redis 转储文件：包含登录缓存与用户记录，绝不能公开
+*.rdb
+*.aof
+*.log
+logs/
+# 本地内置的 Redis 发行包（第三方二进制）
+Redis-x64-*/
+
+# ===================== 本地私密配置 =====================
+# 建议把真实口令写在这里，而不是直接改 application-dev.yml
+dormManager/src/main/resources/application-local.yml
+dormManager/src/main/resources/application-local.yaml
+# 如果你不想公开 dev 配置，取消下一行注释
+# dormManager/src/main/resources/application-dev.yml
+
+# ===================== 系统文件 =====================
+.DS_Store
+Thumbs.db
+desktop.ini

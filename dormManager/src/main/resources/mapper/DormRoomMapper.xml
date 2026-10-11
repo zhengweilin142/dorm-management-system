@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.it.dorm.mapper.DormRoomMapper">
+
+    <resultMap type="DormRoom" id="DormRoomResult">
+        <result property="id" column="id"/>
+        <result property="roomNo" column="room_no"/>
+        <result property="buildId" column="build_id"/>
+        <result property="floorNum" column="floor_num"/>
+        <result property="maxCapacity" column="max_capacity"/>
+        <result property="currentCapacity" column="current_capacity"/>
+        <result property="electricity" column="electricity"/>
+        <result property="water" column="water"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectDormRoomVo">
+        select dr.id,
+               dr.room_no,
+               dr.build_id,
+               dr.floor_num,
+               dr.max_capacity,
+               dr.current_capacity,
+               dr.electricity,
+               dr.water,
+               dr.remark,
+               dr.create_by,
+               dr.create_time,
+               dr.update_by,
+               dr.update_time,
+               db.build_name
+        from dorm_room dr
+                 left join dorm_build db on dr.build_id = db.id
+
+    </sql>
+
+    <select id="selectDormRoomList" parameterType="DormRoom" resultMap="DormRoomResult">
+        <include refid="selectDormRoomVo"/>
+        <where>
+            <if test="roomNo != null  and roomNo != ''">and dr.room_no = #{roomNo}</if>
+            <if test="buildId != null  and buildId != ''">and dr.build_id = #{buildId}</if>
+        </where>
+    </select>
+
+    <select id="selectDormRoomById" parameterType="Long" resultMap="DormRoomResult">
+        <include refid="selectDormRoomVo"/>
+        where dr.id = #{id}
+    </select>
+    <select id="notFullRoom" resultType="java.lang.Integer">
+        SELECT COUNT(*) AS not_full_count
+        FROM dorm_room dr
+        WHERE dr.max_capacity > dr.current_capacity;
+    </select>
+
+    <delete id="deleteDormRoomByIds" parameterType="String">
+        delete from dorm_room where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
